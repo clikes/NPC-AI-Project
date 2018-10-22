@@ -100,7 +100,7 @@ public class CharacterDemoController : MonoBehaviour
 				animator.SetInteger("Death", 2);//the animator controller will detect death=2 and play DeathB
 				break;
 			case "c":
-				animator.SetInteger("Death", 3);//the animator controller will detect death=3 and play DeathC
+				animator.SetInteger("Death", 0);//the animator controller will detect death=3 and play DeathC
 				break;
 			case "n":
 				animator.SetBool("NonCombat", true);//the animator controller will detect this non combat bool, and go into a non combat state "in" this weaponstate
@@ -171,6 +171,7 @@ public class CharacterDemoController : MonoBehaviour
 		{
 			animator.SetBool("Idling", true);
 		}
+        
 		//un comment next line if you are using physics and have a CharacterController on the prefab
 		//GetComponent<CharacterController>().Move(Vector3.down * gravity * Time.deltaTime);
 	}
