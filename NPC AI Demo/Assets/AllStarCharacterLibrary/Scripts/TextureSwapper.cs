@@ -50,7 +50,7 @@ public class TextureSwapper : MonoBehaviour
 	void UpdateTexture () 
 	{
 
-		currentTexture = (Texture2D) UnityEditor.AssetDatabase.LoadAssetAtPath(("Assets"+ dirPath + names[currentIndex]),typeof(Texture2D));
+		//currentTexture = (Texture2D) UnityEditor.AssetDatabase.LoadAssetAtPath(("Assets"+ dirPath + names[currentIndex]),typeof(Texture2D));
 
 		mat.SetTexture("_MainTex",currentTexture);
 		oldIndex=currentIndex;
