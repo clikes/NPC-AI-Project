@@ -21,9 +21,9 @@ public class RollerAgent : Agent {
 			this.rBody.velocity = Vector3.zero;
 		} else {
 			// 将目标移动到新的位置
-			Target.position = new Vector3 (Random.value * 8 - 4,
+			Target.position = new Vector3 (Random.value * 16 - 8,
 				0.5f,
-				Random.value * 8 - 4);
+				Random.value * 16 - 8);
 		}
         previousDistance = Vector3.Distance(this.transform.position,
                                           Target.position);

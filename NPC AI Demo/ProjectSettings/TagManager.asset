@@ -5,6 +5,17 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - wall
+  - target
+  - ground
+  - ball
+  - blueAgent
+  - blueGoal
+  - redGoal
+  - banana
+  - agent
+  - badBanana
+  - Ground
   layers:
   - Default
   - TransparentFX

@@ -9,13 +9,15 @@ namespace NpcAI
     /// </summary>
     public class EnemyController : MonoBehaviour
     {
-        Animator animator;
-        public GameObject floorPlane;
+        //Animator animator;
+        public TrainingGround trainingGround;
         float rotateSpeed = 20.0f; //used to smooth out turning
         float[] randommove = { 0, 0 };
         public Vector3 movementTargetPosition;
         public Vector3 attackPos;
         public Vector3 lookAtPos;
+        public Material alive;
+        public Material dead;
 
         public bool isAlive;
 
@@ -28,13 +30,13 @@ namespace NpcAI
         float gravity = 5.0f;
 
         // Use this for initialization
-        void Start()
+        void Awake()
         {
-            animator = GetComponentInChildren<Animator>();
             movementTargetPosition = transform.position; //initializing our movement target as our current position
             bornPosition = transform.position;
             isAlive = true;
             deathTime = 0;
+            trainingGround = GetComponentInParent<TrainingGround>();
         }
 
         static float[] GetRandomPosition()
@@ -56,19 +58,20 @@ namespace NpcAI
 
         public void Kill()
         {
-            animator.SetInteger("Death", 2);
+            //animator.SetInteger("Death", 2);
             isAlive = false;
             deathTime = Time.time;
             GetComponent<CharacterController>().enabled = false;
+            GetComponent<Renderer>().material = dead;
         }
 
-        void Respawn()
+        public void Respawn()
         {
-            animator.SetInteger("Death", 0);
+            //animator.SetInteger("Death", 0);
             Vector3 randomPos = new Vector3
             {
-                x = (float)random.NextDouble() * Consts.OutsideGroundLength  / 2,
-                z = (float)random.NextDouble() * Consts.OutsideGroundLength  / 2
+                x = ((float)random.NextDouble() * Consts.OutsideGroundLength  / 2 ) - 2,
+                z = ((float)random.NextDouble() * Consts.OutsideGroundLength  / 2 ) -2
             };
             if (random.NextDouble() > 0.5)
             {
@@ -78,16 +81,19 @@ namespace NpcAI
             {
                 randomPos.z *= -1;
             }
-            transform.position = randomPos;
+            randomPos.y = 0.5f;
+            randomPos += trainingGround.transform.position;
+            transform.position = randomPos;//get new position
             isAlive = true;
             GetComponent<CharacterController>().enabled = true;
+            GetComponent<Renderer>().material = alive;
         }
 
         // Update is called once per frame
         void FixedUpdate()
         {
-            animator.SetInteger("WeaponState", 0);
-            GetComponent<CharacterController>().SimpleMove(Vector3.zero);
+            //animator.SetInteger("WeaponState", 0);
+            //GetComponent<CharacterController>().SimpleMove(Vector3.zero);
             //transform.position = transform.position - transform.up;
 
             movementTargetPosition = transform.position;
@@ -102,18 +108,9 @@ namespace NpcAI
             Vector3 deltaTarget = movementTargetPosition - transform.position;
             lookAtPos = transform.position + deltaTarget.normalized * 2.0f;
             transform.LookAt(lookAtPos);
-            if (Vector3.Distance(movementTargetPosition, transform.position) > 0.5f)
-            {
-                animator.SetBool("Idling", false);
-            }
-            else
-            {
-                animator.SetBool("Idling", true);
-            }
-            animator.SetBool("Idling", true);
             if (!isAlive)
             {
-                if (Time.time - deathTime >= 3)
+                if (Time.time - deathTime >= Consts.EnemyRespawnTime)
                 {
                     Respawn();
                 }

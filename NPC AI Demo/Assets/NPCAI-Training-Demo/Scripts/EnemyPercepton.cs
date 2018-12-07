@@ -39,7 +39,7 @@ namespace NpcAI
                 //extra 3 for 1,if not found object 2, enemy isalive, the distance to the object
                 float[] subList = new float[detectableObjects.Length + 3];
                 if (Physics.SphereCast(transform.position +
-                                       new Vector3(0f, startOffset, 0f), 0.5f,
+                                       new Vector3(0f, startOffset, 0f), Consts.GroundScale,
                     endPosition, out hit, rayDistance))
                 {
                     for (int i = 0; i < detectableObjects.Length; i++)
@@ -47,11 +47,18 @@ namespace NpcAI
                         if (hit.collider.gameObject.CompareTag(detectableObjects[i]))
                         {
                             //objects.Add(hit.collider.gameObject);
-                            if (hit.collider.gameObject.CompareTag("Enemy")){
-                                subList[detectableObjects.Length + 1] = hit.collider.gameObject.GetComponent<EnemyController>().isAlive.GetHashCode();
-                            }
+                           
                             subList[i] = 1;
-                            subList[detectableObjects.Length + 2] = hit.distance / rayDistance;
+                            //subList[detectableObjects.Length + 2] = hit.distance / rayDistance;
+                            if (hit.collider.gameObject.CompareTag("Enemy"))
+                            {
+                                subList[detectableObjects.Length + 1] = hit.collider.gameObject.transform.position.x - transform.position.x;
+                                subList[detectableObjects.Length + 2] = hit.collider.gameObject.transform.position.z - transform.position.z;
+                            }
+                            else
+                            {
+                                subList[detectableObjects.Length + 2] = hit.distance/rayDistance;
+                            }
                             break;
                         }
                     }
@@ -63,8 +70,8 @@ namespace NpcAI
                 string test = "";
                 foreach (var item in subList)
                 {
-                    test += " ";
                     test += item.ToString();
+                    test += ",";
                 }
                 //Debug.Log(test);
                 perceptionBuffer.AddRange(subList);
