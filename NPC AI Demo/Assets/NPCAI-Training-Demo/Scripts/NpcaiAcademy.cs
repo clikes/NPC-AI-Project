@@ -11,6 +11,7 @@ namespace NpcAI
     {
         public EnemyController[] Enemies { get; private set; }
         System.Random random = new System.Random();
+        
 
         void Start()
         {

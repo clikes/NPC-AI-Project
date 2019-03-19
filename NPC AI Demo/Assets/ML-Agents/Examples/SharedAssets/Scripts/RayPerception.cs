@@ -60,6 +60,7 @@ namespace MLAgents
                 {
                     subList[detectableObjects.Length] = 1f;
                 }
+
                 perceptionBuffer.AddRange(subList);
             }
 
