@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: NPCAILearningBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 2
-    numStackedVectorObservations: 37
+    vectorObservationSize: 37
+    numStackedVectorObservations: 2
     vectorActionSize: 02000000
     cameraResolutions: []
     vectorActionDescriptions:
