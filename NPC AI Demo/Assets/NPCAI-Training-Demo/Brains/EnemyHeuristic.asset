@@ -8,17 +8,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b23992c8eb17439887f5e944bf04a40, type: 3}
-  m_Name: NPCAILearningBrain
+  m_Script: {fileID: 11500000, guid: 943466ab374444748a364f9d6c3e2fe2, type: 3}
+  m_Name: EnemyHeuristic
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 37
-    numStackedVectorObservations: 2
-    vectorActionSize: 02000000
+    vectorObservationSize: 1
+    numStackedVectorObservations: 1
+    vectorActionSize: 01000000
     cameraResolutions: []
     vectorActionDescriptions:
     - 
-    - 
-    vectorActionSpaceType: 1
-  model: {fileID: 11400000, guid: 905a362641be13c47a415a25d60812f8, type: 3}
-  inferenceDevice: 0
+    vectorActionSpaceType: 0
+  decision: {fileID: 0}
+  decisionScript: {fileID: 0}
+  c_decision: 
