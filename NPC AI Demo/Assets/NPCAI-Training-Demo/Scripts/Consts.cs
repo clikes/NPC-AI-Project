@@ -6,6 +6,7 @@ namespace NpcAI
     {
 
         public readonly static float GroundScale = 1f;
+        public readonly static int NumOfEnemies = 1;
         static int PointGroundLengthNormal = 10;
         static int AlertGroundLengthNormal = 17;
         static int OutsideGroundLengthNormal = 24;

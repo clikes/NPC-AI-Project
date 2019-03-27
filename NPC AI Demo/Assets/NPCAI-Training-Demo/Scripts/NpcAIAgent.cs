@@ -64,7 +64,7 @@ namespace NpcAI
             if (hit.collider.CompareTag("wall"))
             {
                 AddReward(-1.0f);
-                AddReward(-0.01f * (time - lastEpisode) / Time.deltaTime);
+                AddReward(-0.05f * (time - lastEpisode) / Time.deltaTime);
                 Done();
             }
             else if (hit.collider.CompareTag("Enemy"))
@@ -79,7 +79,7 @@ namespace NpcAI
             //time punishment
             AddReward(-0.05f);
             float distance = 0;
-            //kill enemies 
+
             CloestEnemy = trainingGround.Enemies[0];
             foreach (var e in trainingGround.Enemies)
             {
@@ -91,15 +91,16 @@ namespace NpcAI
                 }
             }
 
-            distance = Vector3.Distance(CloestEnemy.transform.position, transform.position);
-            //if (CloestEnemyDistance - distance > 3 && CloestEnemyDistance - distance > CloestEnemyDistance / 5)
-            //{
-            //    AddReward(0.05f);
-            //    Debug.Log("DISTANCE REWARD");
-            //    CloestEnemyDistance = distance;
-            //}
-            //Debug.Log(CloestEnemyDistance);
-            //CloestEnemyDistance = distance;
+            distance = Vector3.Distance(CloestEnemy.transform.position, transform.position);//the distance from cloestenemy to Agent this frame
+            //get reward from get close to enemy
+            if (CloestEnemyDistance - distance > 3 && CloestEnemyDistance - distance > CloestEnemyDistance / 5)
+            {
+                AddReward(0.05f);
+                Debug.Log("DISTANCE REWARD");
+                CloestEnemyDistance = distance;
+            }
+           // Debug.Log(CloestEnemyDistance);
+            CloestEnemyDistance = distance;
 
             time += Time.deltaTime;
             //Debug.Log("time: " + (time - lastEpisode));

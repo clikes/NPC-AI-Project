@@ -1011,7 +1011,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1283142206219526}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -8.82, y: 0.54, z: -1.9131382}
+  m_LocalPosition: {x: -7.243, y: 0.54, z: -1.9131382}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4612775351772856}
@@ -1233,7 +1233,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1221402080566944}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -8.82, y: 0.54, z: -1.9131382}
+  m_LocalPosition: {x: -8.82, y: 0.54, z: -0.577}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4768298033672114}
@@ -1308,7 +1308,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1314793917714646}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -23.9, y: -9.7, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4542268098672532}
@@ -3568,8 +3568,8 @@ MonoBehaviour:
   movementTargetPosition: {x: 0, y: 0, z: 0}
   attackPos: {x: 0, y: 0, z: 0}
   lookAtPos: {x: 0, y: 0, z: 0}
-  alive: {fileID: 0}
-  dead: {fileID: 0}
+  alive: {fileID: 2100000, guid: 5999be2f9818d9c4086df2f9b3cc31d3, type: 2}
+  dead: {fileID: 2100000, guid: 95999103157a6b44a88ec11d93d6a009, type: 2}
   isAlive: 0
   bornPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &114937915112785010
@@ -3587,8 +3587,8 @@ MonoBehaviour:
   movementTargetPosition: {x: 0, y: 0, z: 0}
   attackPos: {x: 0, y: 0, z: 0}
   lookAtPos: {x: 0, y: 0, z: 0}
-  alive: {fileID: 0}
-  dead: {fileID: 0}
+  alive: {fileID: 2100000, guid: 5999be2f9818d9c4086df2f9b3cc31d3, type: 2}
+  dead: {fileID: 2100000, guid: 95999103157a6b44a88ec11d93d6a009, type: 2}
   isAlive: 0
   bornPosition: {x: 0, y: 0, z: 0}
 --- !u!143 &143371139333033944
