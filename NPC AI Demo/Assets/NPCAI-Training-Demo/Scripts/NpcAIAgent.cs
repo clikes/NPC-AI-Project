@@ -8,7 +8,7 @@ namespace NpcAI
     {
         NpcaiAcademy academy;
         //Animator animator;
-        private EnemyPercepton rayPer;//for enemy detect
+        private ObjectPercepton rayPer;//for enemy detect
         TrainingGround trainingGround;
         CharacterController cc;
         int killcount = 0;
@@ -22,7 +22,7 @@ namespace NpcAI
         {
             cc = GetComponent<CharacterController>();
             academy = GameObject.Find("Academy").GetComponent<NpcaiAcademy>();
-            rayPer = GetComponent<EnemyPercepton>();
+            rayPer = GetComponent<ObjectPercepton>();
             lastEpisode = currentTime.Second;
             trainingGround = GetComponentInParent<TrainingGround>();
         }

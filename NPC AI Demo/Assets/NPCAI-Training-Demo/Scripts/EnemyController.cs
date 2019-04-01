@@ -37,6 +37,7 @@ namespace NpcAI
             isAlive = true;
             deathTime = 0;
             trainingGround = GetComponentInParent<TrainingGround>();
+            randommove = GetRandomPosition();
         }
 
         static float[] GetRandomPosition()
@@ -89,6 +90,15 @@ namespace NpcAI
             GetComponent<Renderer>().material = alive;
         }
 
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            // Debug.Log(hit.collider.name);
+            if (hit.collider.CompareTag("wall"))
+            {
+                randommove = GetRandomPosition();
+            }
+        }
+
         // Update is called once per frame
         void FixedUpdate()
         {
@@ -108,6 +118,7 @@ namespace NpcAI
             Vector3 deltaTarget = movementTargetPosition - transform.position;
             lookAtPos = transform.position + deltaTarget.normalized * 2.0f;
             transform.LookAt(lookAtPos);
+            GetComponent<CharacterController>().SimpleMove(deltaTarget.normalized * Consts.enemyMoveSpeed);
             if (!isAlive)
             {
                 if (Time.time - deathTime >= Consts.EnemyRespawnTime)

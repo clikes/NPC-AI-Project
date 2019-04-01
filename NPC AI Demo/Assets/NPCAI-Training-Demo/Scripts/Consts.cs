@@ -15,6 +15,7 @@ namespace NpcAI
         public readonly static float OutsideGroundLength = GroundScale * OutsideGroundLengthNormal;
         public readonly static float killDistance = 1.2f;
         public readonly static float agentMoveSpeed = 8.0f;
+        public readonly static float enemyMoveSpeed = 6.0f;
         public readonly static Vector3 HeightOffset = new Vector3(0,0.5f, 0);
         public readonly static float EnemyRespawnTime = 0f;
         /// <summary>
