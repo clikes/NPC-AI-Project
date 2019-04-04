@@ -81,6 +81,69 @@ namespace NpcAI
             return perceptionBuffer;
         }
 
+        public List<float> EnemyPerceive(float rayDistance,
+            float[] rayAngles, string[] detectableObjects,
+                                    float startOffset, float endOffset)
+        {
+            perceptionBuffer.Clear();
+            objects.Clear();
+            // For each ray sublist stores categorial information on detected object
+            // along with object distance.
+            foreach (float angle in rayAngles)
+            {
+                endPosition = transform.TransformDirection(
+                    PolarToCartesian(rayDistance, angle));
+                endPosition.y = endOffset;
+                if (Application.isEditor)
+                {
+                    Debug.DrawRay(transform.position + new Vector3(0f, startOffset, 0f),
+                        endPosition, Color.black, 0.01f, true);
+                }
+                //extra 3 for 1,if not found object 2, enemy isalive, the distance to the object
+                float[] subList = new float[detectableObjects.Length + 3];
+                if (Physics.SphereCast(transform.position +
+                                       new Vector3(0f, startOffset, 0f), Consts.GroundScale,
+                    endPosition, out hit, rayDistance))
+                {
+                    for (int i = 0; i < detectableObjects.Length; i++)
+                    {
+                        if (hit.collider.gameObject.CompareTag(detectableObjects[i]))
+                        {
+                            //objects.Add(hit.collider.gameObject);
+
+                            subList[i] = 1;
+                            //subList[detectableObjects.Length + 2] = hit.distance / rayDistance;
+                            if (hit.collider.gameObject.CompareTag("player"))
+                            {
+                                //Debug.Log("detect enemy: " + hit.collider.name);
+                                subList[detectableObjects.Length + 1] = hit.collider.gameObject.transform.position.x - transform.position.x;
+                                subList[detectableObjects.Length + 2] = hit.collider.gameObject.transform.position.z - transform.position.z;
+                            }
+                            else
+                            {
+                                subList[detectableObjects.Length + 2] = hit.distance / rayDistance;
+                            }
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    subList[detectableObjects.Length] = 1f;
+                }
+                string test = "";
+                foreach (var item in subList)
+                {
+                    test += item.ToString();
+                    test += ",";
+                }
+                //Debug.Log(test);
+                perceptionBuffer.AddRange(subList);
+            }
+
+            return perceptionBuffer;
+        }
+
         /// <summary>
         /// Converts polar coordinate to cartesian coordinate.
         /// </summary>

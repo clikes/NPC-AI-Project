@@ -8,14 +8,10 @@ TagManager:
   - wall
   - target
   - ground
-  - ball
-  - blueAgent
-  - blueGoal
-  - redGoal
-  - banana
   - agent
-  - badBanana
   - Ground
+  - player
+  - obstacle
   layers:
   - Default
   - TransparentFX

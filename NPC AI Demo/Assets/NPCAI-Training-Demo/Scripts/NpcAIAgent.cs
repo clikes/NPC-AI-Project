@@ -69,7 +69,7 @@ namespace NpcAI
             }
             else if (hit.collider.CompareTag("Enemy"))
             {
-                hit.collider.GetComponent<EnemyController>().Kill();
+                hit.collider.GetComponent<EnemyAgent>().Kill();
                 AddReward(1.0f);
             }
         }

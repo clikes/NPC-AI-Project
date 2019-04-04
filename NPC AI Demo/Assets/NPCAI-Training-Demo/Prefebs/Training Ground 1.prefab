@@ -77,6 +77,7 @@ GameObject:
   - component: {fileID: 23799852674694898}
   - component: {fileID: 114937915112785010}
   - component: {fileID: 143427701832426610}
+  - component: {fileID: 114003891959108192}
   m_Layer: 0
   m_Name: EnemyBody
   m_TagString: Enemy
@@ -186,6 +187,7 @@ GameObject:
   - component: {fileID: 23149087857583484}
   - component: {fileID: 114841870617780276}
   - component: {fileID: 143371139333033944}
+  - component: {fileID: 114304486449534672}
   m_Layer: 0
   m_Name: EnemyBody (1)
   m_TagString: Enemy
@@ -348,7 +350,7 @@ GameObject:
   - component: {fileID: 4991336014948450}
   m_Layer: 0
   m_Name: Agent
-  m_TagString: Untagged
+  m_TagString: agent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -701,6 +703,7 @@ GameObject:
   - component: {fileID: 23323822965562736}
   - component: {fileID: 114273623740973026}
   - component: {fileID: 143643970799671810}
+  - component: {fileID: 114272579739610190}
   m_Layer: 0
   m_Name: EnemyBody (1)
   m_TagString: Enemy
@@ -3494,6 +3497,27 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114003891959108192
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1221402080566944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 951bd21d60e6d42489b01058a0b29f5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brain: {fileID: 11400000, guid: 25d7a24458d2644698712dc225092f23, type: 2}
+  agentParameters:
+    agentCameras: []
+    maxStep: 0
+    resetOnDone: 1
+    onDemandDecision: 0
+    numberOfActionsBetweenDecisions: 1
+  alive: {fileID: 2100000, guid: 5999be2f9818d9c4086df2f9b3cc31d3, type: 2}
+  dead: {fileID: 2100000, guid: 95999103157a6b44a88ec11d93d6a009, type: 2}
+  isAlive: 0
 --- !u!114 &114104578213428856
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3505,13 +3529,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15f91e0ef9cd5f74985d206e02b2e2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114273623740973026
+--- !u!114 &114272579739610190
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1900497539920658}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 951bd21d60e6d42489b01058a0b29f5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brain: {fileID: 11400000, guid: 25d7a24458d2644698712dc225092f23, type: 2}
+  agentParameters:
+    agentCameras: []
+    maxStep: 0
+    resetOnDone: 1
+    onDemandDecision: 0
+    numberOfActionsBetweenDecisions: 1
+  alive: {fileID: 2100000, guid: 5999be2f9818d9c4086df2f9b3cc31d3, type: 2}
+  dead: {fileID: 2100000, guid: 95999103157a6b44a88ec11d93d6a009, type: 2}
+  isAlive: 0
+--- !u!114 &114273623740973026
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1900497539920658}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e4f5af064eae1e409bb8bee12339516, type: 3}
   m_Name: 
@@ -3524,6 +3569,27 @@ MonoBehaviour:
   dead: {fileID: 2100000, guid: 95999103157a6b44a88ec11d93d6a009, type: 2}
   isAlive: 0
   bornPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &114304486449534672
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1283142206219526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 951bd21d60e6d42489b01058a0b29f5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brain: {fileID: 11400000, guid: 25d7a24458d2644698712dc225092f23, type: 2}
+  agentParameters:
+    agentCameras: []
+    maxStep: 0
+    resetOnDone: 1
+    onDemandDecision: 0
+    numberOfActionsBetweenDecisions: 1
+  alive: {fileID: 2100000, guid: 5999be2f9818d9c4086df2f9b3cc31d3, type: 2}
+  dead: {fileID: 2100000, guid: 95999103157a6b44a88ec11d93d6a009, type: 2}
+  isAlive: 0
 --- !u!114 &114483815659109492
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3559,7 +3625,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1283142206219526}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e4f5af064eae1e409bb8bee12339516, type: 3}
   m_Name: 
@@ -3578,7 +3644,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1221402080566944}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e4f5af064eae1e409bb8bee12339516, type: 3}
   m_Name: 
