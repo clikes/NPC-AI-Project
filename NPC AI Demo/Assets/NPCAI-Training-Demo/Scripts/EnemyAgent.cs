@@ -70,7 +70,7 @@ namespace NpcAI
             float rayDistance = Consts.OutsideGroundLength * 0.8f;
             float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f };
             string[] detectableObjects = { "player", "wall" };
-            List<float> buffer = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f);
+            List<float> buffer = rayPer.EnemyPerceive(rayDistance, rayAngles, detectableObjects, 0f, 0f);
             AddVectorObs(buffer);
             AddVectorObs(transform.forward.x);
             AddVectorObs(transform.forward.z);
