@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b23992c8eb17439887f5e944bf04a40, type: 3}
-  m_Name: EnemyLearningBrain
+  m_Name: NPCAILearningWithObstacle
   m_EditorClassIdentifier: 
   brainParameters:
     vectorObservationSize: 46
@@ -20,5 +20,5 @@ MonoBehaviour:
     - 
     - 
     vectorActionSpaceType: 1
-  model: {fileID: 11400000, guid: 4234407ed465cce4bb4e99c9653f76ab, type: 3}
+  model: {fileID: 0}
   inferenceDevice: 0

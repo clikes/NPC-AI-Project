@@ -10,6 +10,7 @@ namespace NpcAI
         //Animator animator;
         private ObjectPercepton rayPer;//for enemy detect
         TrainingGround trainingGround;
+        TreasureController target;
         CharacterController cc;
         int killcount = 0;
         System.DateTime currentTime = new System.DateTime();
@@ -25,6 +26,7 @@ namespace NpcAI
             rayPer = GetComponent<ObjectPercepton>();
             lastEpisode = currentTime.Second;
             trainingGround = GetComponentInParent<TrainingGround>();
+            target = trainingGround.GetComponentInChildren<TreasureController>();
         }
 
         public override void AgentReset()
@@ -40,11 +42,13 @@ namespace NpcAI
         {
             float rayDistance = Consts.OutsideGroundLength * 0.8f;
             float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f};
-            string[] detectableObjects = { "Enemy" , "wall"};
+            string[] detectableObjects = { "Enemy" , "wall" , "obstacle"};
             List<float> buffer = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f);
             AddVectorObs(buffer);
             AddVectorObs(transform.forward.x);
             AddVectorObs(transform.forward.z);
+            AddVectorObs(target.transform.position.x - transform.position.x);
+            AddVectorObs(target.transform.position.z - transform.position.z);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -69,8 +73,21 @@ namespace NpcAI
             }
             else if (hit.collider.CompareTag("Enemy"))
             {
-                hit.collider.GetComponent<EnemyAgent>().Kill();
+                
+                if (hit.collider.GetComponent<EnemyAgent>().isActiveAndEnabled == false)
+                {
+                    hit.collider.GetComponent<EnemyController>().Kill();
+                }
+                else
+                {
+                    hit.collider.GetComponent<EnemyAgent>().Kill();
+                }
+               
                 AddReward(1.0f);
+            }
+            else if (hit.collider.CompareTag("obstacle"))
+            {
+                AddReward(-0.05f);
             }
         }
 

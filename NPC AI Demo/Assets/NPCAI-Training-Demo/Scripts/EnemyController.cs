@@ -18,6 +18,7 @@ namespace NpcAI
         public Vector3 lookAtPos;
         public Material alive;
         public Material dead;
+        public bool moveable;
 
         public bool isAlive;
 
@@ -40,7 +41,7 @@ namespace NpcAI
             randommove = GetRandomPosition();
         }
 
-        static float[] GetRandomPosition()
+        public static float[] GetRandomPosition()
         {
 
             float x = (float)random.NextDouble();
@@ -117,14 +118,16 @@ namespace NpcAI
 
             Vector3 deltaTarget = movementTargetPosition - transform.position;
             lookAtPos = transform.position + deltaTarget.normalized * 2.0f;
-            transform.LookAt(lookAtPos);
-            GetComponent<CharacterController>().SimpleMove(deltaTarget.normalized * Consts.enemyMoveSpeed);
+            //transform.LookAt(lookAtPos);
+            if (moveable)
+            {
+                GetComponent<CharacterController>().SimpleMove(deltaTarget.normalized * Consts.enemyMoveSpeed);
+            }
+            
             if (!isAlive)
             {
-                if (Time.time - deathTime >= Consts.EnemyRespawnTime)
-                {
-                    Respawn();
-                }
+               Respawn();
+                
             }
 
         }

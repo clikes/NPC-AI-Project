@@ -13,6 +13,7 @@ namespace NpcAI
         private ObjectPercepton rayPer;//for enemy detect
         TrainingGround trainingGround;
         CharacterController cc;
+        TreasureController target;
         System.DateTime currentTime = new System.DateTime();
 
         /// <summary>
@@ -37,6 +38,7 @@ namespace NpcAI
             trainingGround = GetComponentInParent<TrainingGround>();
             isAlive = true;
             deathTime = 0;
+            target = trainingGround.GetComponentInChildren<TreasureController>();
         }
 
         public override void AgentReset()
@@ -63,17 +65,20 @@ namespace NpcAI
             isAlive = true;
             cc.enabled = true;
             GetComponent<Renderer>().material = alive;
+
         }
 
         public override void CollectObservations()
         {
             float rayDistance = Consts.OutsideGroundLength * 0.8f;
             float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f };
-            string[] detectableObjects = { "player", "wall" };
+            string[] detectableObjects = { "player", "obstacle","wall" };
             List<float> buffer = rayPer.EnemyPerceive(rayDistance, rayAngles, detectableObjects, 0f, 0f);
             AddVectorObs(buffer);
             AddVectorObs(transform.forward.x);
             AddVectorObs(transform.forward.z);
+            AddVectorObs(target.transform.position.x - transform.position.x);
+            AddVectorObs(target.transform.position.z - transform.position.z);
         }
 
         /// <summary>
@@ -117,6 +122,16 @@ namespace NpcAI
 
                 isAlive = false;
             }
+            if (hit.collider.CompareTag("target"))
+            {
+                hit.collider.GetComponent<TreasureController>().Steal();
+                AddReward(1.0f);
+            }
+            if (hit.collider.CompareTag("obstacle"))
+            {
+                AddReward(-0.05f);
+            }
+
         }
 
         public override void AgentAction(float[] vectorAction, string textAction)

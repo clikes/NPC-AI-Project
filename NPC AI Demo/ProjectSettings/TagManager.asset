@@ -12,6 +12,7 @@ TagManager:
   - Ground
   - player
   - obstacle
+  - pointground
   layers:
   - Default
   - TransparentFX

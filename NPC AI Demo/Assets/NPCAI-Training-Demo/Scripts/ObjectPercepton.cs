@@ -49,17 +49,9 @@ namespace NpcAI
                             //objects.Add(hit.collider.gameObject);
                            
                             subList[i] = 1;
-                            //subList[detectableObjects.Length + 2] = hit.distance / rayDistance;
-                            if (hit.collider.gameObject.CompareTag("Enemy"))
-                            {
-                                //Debug.Log("detect enemy: " + hit.collider.name);
-                                subList[detectableObjects.Length + 1] = hit.collider.gameObject.transform.position.x - transform.position.x;
-                                subList[detectableObjects.Length + 2] = hit.collider.gameObject.transform.position.z - transform.position.z;
-                            }
-                            else
-                            {
-                                subList[detectableObjects.Length + 2] = hit.distance/rayDistance;
-                            }
+
+                            subList[detectableObjects.Length + 1] = hit.point.x - transform.position.x;
+                            subList[detectableObjects.Length + 2] = hit.point.z - transform.position.z;
                             break;
                         }
                     }
