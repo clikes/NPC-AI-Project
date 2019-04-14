@@ -9,17 +9,39 @@ namespace NpcAI
     {
 
         NpcAIAgent oneAgent;
+        EnemyAgent oneEnemyAgent;
         public Text rewardtext;
+        public Text enemyrewardtext;
+        public Text TimeText;
         // Use this for initialization
         void Start()
         {
-            oneAgent = GameObject.Find("AgentBody").GetComponent<NpcAIAgent>();
+            if (GameObject.Find("AgentBody") != null)
+            {
+                oneAgent = GameObject.Find("AgentBody").GetComponent<NpcAIAgent>();
+            }
+            if (GameObject.Find("EnemyBody") != null)
+            {
+                oneEnemyAgent = GameObject.Find("EnemyBody").GetComponent<EnemyAgent>();
+                
+            }
+             
         }
 
         // Update is called once per frame
         void Update()
         {
-            rewardtext.text = oneAgent.GetCumulativeReward().ToString();
+            if (oneAgent != null)
+            {
+                rewardtext.text = oneAgent.GetCumulativeReward().ToString();
+            }
+            if (oneEnemyAgent != null)
+            {
+                enemyrewardtext.text = oneEnemyAgent.GetCumulativeReward().ToString();
+                TimeText.text = oneEnemyAgent.lastEpisode.ToString();
+            }
+            
+
         }
     }
 }

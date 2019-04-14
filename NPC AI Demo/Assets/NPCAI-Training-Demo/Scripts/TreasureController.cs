@@ -32,8 +32,11 @@ namespace NpcAI
         public void Steal()
         {
             randomPos();
-
-            ground.GetComponentInChildren<NpcAIAgent>().AddReward(-1.0f);
+            if (ground.GetComponentInChildren<NpcAIAgent>() != null)
+            {
+                ground.GetComponentInChildren<NpcAIAgent>().AddReward(-1.0f);
+            }
+           
 
         }
 

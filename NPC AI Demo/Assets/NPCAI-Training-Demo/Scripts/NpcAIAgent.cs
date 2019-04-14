@@ -29,7 +29,7 @@ namespace NpcAI
             lastEpisode = currentTime.Second;
             trainingGround = GetComponentInParent<TrainingGround>();
             target = trainingGround.GetComponentInChildren<TreasureController>();
-            target.gameObject.SetActive(false);
+            //target.gameObject.SetActive(false);
             agentRb = GetComponent<Rigidbody>();
         }
 
@@ -123,7 +123,7 @@ namespace NpcAI
                 AddReward(-0.05f);
             }
         }
-
+        
         public override void AgentAction(float[] vectorAction, string textAction)
         {
             //time punishment
@@ -146,7 +146,7 @@ namespace NpcAI
             if (CloestEnemyDistance - distance > 3 && CloestEnemyDistance - distance > CloestEnemyDistance / 5)
             {
                 AddReward(0.1f);
-                Debug.Log("DISTANCE REWARD");
+                //Debug.Log("DISTANCE REWARD");
                 CloestEnemyDistance = distance;
             }
             else if (CloestEnemyDistance - distance < 0)
@@ -168,7 +168,7 @@ namespace NpcAI
             Vector3 dirToGo = Vector3.zero;
             Vector3 rotateDir = Vector3.zero;
             Vector3 MoveToward = Vector3.zero;
-                Vector3 LookToward = Vector3.zero;
+            Vector3 LookToward = Vector3.zero;
             if (brain.brainParameters.vectorActionSpaceType == SpaceType.continuous)
             {
                 

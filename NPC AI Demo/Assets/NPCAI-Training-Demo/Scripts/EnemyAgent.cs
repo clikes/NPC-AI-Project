@@ -28,9 +28,9 @@ namespace NpcAI
         public Material dead;
         public bool isAlive;
         float deathTime;
+        float struckTime = float.MinValue;
 
-       
-        float lastEpisode = 0;
+        public float lastEpisode { get; private set; } = 0;
         // Use this for initialization
         void Start()
         {
@@ -39,7 +39,7 @@ namespace NpcAI
             academy = GameObject.Find("Academy").GetComponent<NpcaiAcademy>();
             rayPer = GetComponent<ObjectPercepton>();
             rayPer.enemy = this;
-            lastEpisode = currentTime.Second;
+            lastEpisode = Timer.time;
             trainingGround = GetComponentInParent<TrainingGround>();
             isAlive = true;
             deathTime = 0;
@@ -51,9 +51,10 @@ namespace NpcAI
 
         public override void AgentReset()
         {
+            struckTime = float.MinValue;
             transform.position = trainingGround.transform.position;
             transform.position += Consts.HeightOffset;
-            lastEpisode = Timer.time;
+            
             Vector3 randomPos = new Vector3
             {
                 x = ((float)random.NextDouble() * Consts.OutsideGroundLength / 2) - 2,
@@ -80,13 +81,13 @@ namespace NpcAI
         {
             float rayDistance = Consts.OutsideGroundLength * 0.8f;
             float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f };
-            string[] detectableObjects = { "obstacle","wall"};
+            string[] detectableObjects = { "obstacle","wall", "agent", "target"};
             List<float> buffer = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f);
             AddVectorObs(buffer);
-            AddVectorObs(target.transform.position.x - transform.position.x);
-            AddVectorObs(target.transform.position.z - transform.position.z);
-            AddVectorObs(player.transform.position.x - transform.position.x);
-            AddVectorObs(player.transform.position.z - transform.position.z);
+            AddVectorObs(transform.forward.x);
+            AddVectorObs(transform.forward.z);
+            //AddVectorObs(target.transform.position.x - transform.position.x);
+            //AddVectorObs(target.transform.position.z - transform.position.z);
 
         }
 
@@ -100,25 +101,9 @@ namespace NpcAI
             deathTime = Time.time;
             GetComponent<CharacterController>().enabled = false;
             GetComponent<Renderer>().material = dead;
-            AddReward(-1.0f);
+            AddReward(-2.5f);
         }
 
-        float[] GetRandomPosition()
-        {
-
-            float x = (float)random.NextDouble();
-            float y = (float)random.NextDouble();
-            if (random.NextDouble() > 0.5)
-            {
-                x = -x;
-            }
-            if (random.NextDouble() > 0.5)
-            {
-                y = -y;
-            }
-            float[] result = { x, y };
-            return result;
-        }
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -126,23 +111,30 @@ namespace NpcAI
             if (collision.collider.CompareTag("wall"))
             {
                 AddReward(-1.0f);
-                AddReward(-0.05f * (Timer.time - lastEpisode) / Time.deltaTime);
+                //AddReward(-0.05f * (Timer.time - lastEpisode) / Time.deltaTime);
 
-                isAlive = false;
+                //isAlive = false;
             }
             if (collision.collider.CompareTag("target"))
             {
                 collision.collider.GetComponent<TreasureController>().Steal();
                 disToTarget = float.MaxValue;
-                AddReward(1.0f);
+                AddReward(5.0f);
             }
             if (collision.collider.CompareTag("obstacle"))
             {
                 AddReward(-0.05f);
             }
-
+            
         }
-        
+
+        void OnCollisionExit(Collision collision)
+        {
+            if (collision.collider.CompareTag("obstacle"))
+            {
+                struckTime = float.MinValue;
+            }
+        }
 
         void OnCollisionStay(Collision collision)
         {
@@ -150,8 +142,25 @@ namespace NpcAI
             {
                 //AgentReset();
                 AddReward(-0.05f);
+                if (struckTime == float.MinValue)
+                {
+                    struckTime = Timer.time;
+                }
+                else if (Timer.time - struckTime > 2)
+                {
+                    AgentReset();
+                }
+            }
+            if (collision.collider.CompareTag("wall"))
+            {
+                AddReward(-0.05f);
+                //AddReward(-0.05f * (Timer.time - lastEpisode) / Time.deltaTime);
+
+                //isAlive = false;
             }
         }
+
+        
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
@@ -167,7 +176,7 @@ namespace NpcAI
             if (hit.collider.CompareTag("target"))
             {
                 hit.collider.GetComponent<TreasureController>().Steal();
-                AddReward(1.0f);
+                AddReward(5.0f);
             }
             if (hit.collider.CompareTag("obstacle"))
             {
@@ -189,12 +198,13 @@ namespace NpcAI
             }
 
             //time punishment
-            AddReward(-0.05f);
+            //AddReward(-0.05f);
 
             
             //Debug.Log("time: " + (time - lastEpisode));
             if (Timer.time - lastEpisode > Consts.episodeTime)
             {
+                lastEpisode = Timer.time;
                 Done();
             }
 
@@ -202,27 +212,34 @@ namespace NpcAI
             //get close to target
             if (curDisToTarget > 3 && disToTarget - curDisToTarget > 1)
             {
-                Debug.Log("disreward");
+                //Debug.Log("disreward");
                 disToTarget = curDisToTarget;
                 AddReward(0.05f);
             }
 
             //too close to player punish
-            if (Vector3.Distance(player.transform.position, transform.position) <= 2)
-            {
-                AddReward(-0.05f);
-            }
+            //if (Vector3.Distance(player.transform.position, transform.position) <= 2)
+            //{
+            //    AddReward(-0.05f);
+            //}
 
             Vector3 dirToGo = Vector3.zero;
             Vector3 rotateDir = Vector3.zero;
-
+            Vector3 MoveToward = Vector3.zero;
+            Vector3 LookToward = Vector3.zero;
             if (brain.brainParameters.vectorActionSpaceType == SpaceType.continuous)
             {
-                Vector3 MoveToward = Vector3.zero;
                 MoveToward.x += Mathf.Clamp(vectorAction[0], -1, 1);//钳制value 大于1 则返回1 小于-1则返回-1
                 MoveToward.z += Mathf.Clamp(vectorAction[1], -1, 1);
-                transform.LookAt(transform.position + MoveToward);
-                cc.SimpleMove(Consts.agentMoveSpeed * MoveToward.normalized);
+                LookToward.x += Mathf.Clamp(vectorAction[2], -1, 1);
+                LookToward.z += Mathf.Clamp(vectorAction[3], -1, 1);
+                transform.LookAt(transform.position + LookToward.normalized);
+                //cc.SimpleMove(Consts.agentMoveSpeed * MoveToward.normalized);
+                agentRb.AddForce(MoveToward.normalized * Consts.agentMoveSpeed, ForceMode.VelocityChange);
+                if (agentRb.velocity.magnitude > Consts.agentMoveSpeed)
+                {
+                    agentRb.velocity = agentRb.velocity.normalized * Consts.agentMoveSpeed;
+                }
             }
             else
             {

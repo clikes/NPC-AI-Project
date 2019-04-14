@@ -36,13 +36,13 @@ namespace NpcAI
                 endPosition.y = endOffset;
                 if (Application.isEditor)
                 {
-                    Debug.DrawRay(transform.position + new Vector3(0f, startOffset, 0f),
+                    Debug.DrawRay(transform.position + new Vector3(0f, startOffset, 0f) - transform.forward * Consts.GroundScale,
                         endPosition, Color.black, 0.01f, true);
                 }
                 //extra 3 for 1,if not found object 2, enemy isalive, the distance to the object
                 float[] subList = new float[detectableObjects.Length + 3];
                 if (Physics.SphereCast(transform.position +
-                                       new Vector3(0f, startOffset, 0f), Consts.GroundScale,
+                                       new Vector3(0f, startOffset, 0f) - transform.forward * Consts.GroundScale, Consts.GroundScale,
                     endPosition, out hit, rayDistance))
                 {
                     for (int i = 0; i < detectableObjects.Length; i++)
@@ -64,9 +64,10 @@ namespace NpcAI
                             {
                                 if (enemy != null)
                                 {
-                                    enemy.AddReward(0.02f);
+                                    enemy.AddReward(0.001f);
                                 }
                             }
+                            
                             subList[i] = 1;
 
                             subList[detectableObjects.Length + 1] = hit.point.x - transform.position.x;

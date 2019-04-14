@@ -13,5 +13,6 @@ public class Timer : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
         time += Time.fixedDeltaTime;
+
 	}
 }
