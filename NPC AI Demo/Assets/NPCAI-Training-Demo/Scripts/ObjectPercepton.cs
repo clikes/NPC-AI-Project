@@ -7,6 +7,9 @@ namespace NpcAI
     {
         List<float> perceptionBuffer = new List<float>();
         Vector3 endPosition;
+        public NpcAIAgent player = null;
+        public EnemyAgent enemy = null;
+        bool rewardFlag = true;
         RaycastHit hit;
         public List<GameObject> objects { get; private set; } = new List<GameObject>();
         /// <summary>
@@ -47,11 +50,28 @@ namespace NpcAI
                         if (hit.collider.gameObject.CompareTag(detectableObjects[i]))
                         {
                             //objects.Add(hit.collider.gameObject);
-                           
+                            if (hit.collider.gameObject.CompareTag("Enemy"))
+                            {
+                                if ( player != null  )
+                                {
+                                    rewardFlag = false;
+                                    player.AddReward(0.001f);
+                                }
+                                
+                                //Debug.Log("detect enemy at pos" + hit.point);
+                            }
+                            if (hit.collider.gameObject.CompareTag("target"))
+                            {
+                                if (enemy != null)
+                                {
+                                    enemy.AddReward(0.02f);
+                                }
+                            }
                             subList[i] = 1;
 
                             subList[detectableObjects.Length + 1] = hit.point.x - transform.position.x;
                             subList[detectableObjects.Length + 2] = hit.point.z - transform.position.z;
+                            
                             break;
                         }
                     }
@@ -114,6 +134,10 @@ namespace NpcAI
                             else
                             {
                                 subList[detectableObjects.Length + 2] = hit.distance / rayDistance;
+                            }
+                            if (hit.collider.gameObject.CompareTag("target"))
+                            {
+                                Debug.Log("see target");
                             }
                             break;
                         }

@@ -19,6 +19,7 @@ namespace NpcAI
         public Material alive;
         public Material dead;
         public bool moveable;
+        Rigidbody rb;
 
         public bool isAlive;
 
@@ -39,6 +40,7 @@ namespace NpcAI
             deathTime = 0;
             trainingGround = GetComponentInParent<TrainingGround>();
             randommove = GetRandomPosition();
+            rb = GetComponent<Rigidbody>();
         }
 
         public static float[] GetRandomPosition()
@@ -65,6 +67,7 @@ namespace NpcAI
             deathTime = Time.time;
             GetComponent<CharacterController>().enabled = false;
             GetComponent<Renderer>().material = dead;
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
         }
 
         public void Respawn()
@@ -87,8 +90,21 @@ namespace NpcAI
             randomPos += trainingGround.transform.position;
             transform.position = randomPos;//get new position
             isAlive = true;
-            GetComponent<CharacterController>().enabled = true;
+            //GetComponent<CharacterController>().enabled = true;
             GetComponent<Renderer>().material = alive;
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.CompareTag("wall"))
+            {
+                randommove = GetRandomPosition();
+
+            }
+            else if(collision.collider.CompareTag("obstacle"))
+            {
+                randommove = GetRandomPosition();
+            }
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -118,10 +134,15 @@ namespace NpcAI
 
             Vector3 deltaTarget = movementTargetPosition - transform.position;
             lookAtPos = transform.position + deltaTarget.normalized * 2.0f;
+            rb.AddForce(deltaTarget.normalized * Consts.enemyMoveSpeed, ForceMode.VelocityChange);
+            if (rb.velocity.magnitude > Consts.enemyMoveSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * Consts.enemyMoveSpeed;
+            }
             //transform.LookAt(lookAtPos);
             if (moveable)
             {
-                GetComponent<CharacterController>().SimpleMove(deltaTarget.normalized * Consts.enemyMoveSpeed);
+               // GetComponent<CharacterController>().SimpleMove(deltaTarget.normalized * Consts.enemyMoveSpeed);
             }
             
             if (!isAlive)

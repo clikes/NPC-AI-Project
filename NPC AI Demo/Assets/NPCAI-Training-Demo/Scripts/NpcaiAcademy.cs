@@ -11,6 +11,7 @@ namespace NpcAI
     {
         public EnemyController[] Enemies { get; private set; }
         System.Random random = new System.Random();
+        List<Vector3> oriGroundScaler;
         
 
         void Start()
@@ -23,14 +24,17 @@ namespace NpcAI
                 Enemies[i].Respawn();
             }
 
-
+            oriGroundScaler = new List<Vector3>();
             GameObject[] grounds = GameObject.FindGameObjectsWithTag("Ground");
             foreach (var ground in grounds)
             {
-               // Debug.Log(ground.name);
+                oriGroundScaler.Add(ground.transform.localScale);
+                // Debug.Log(ground.name);
                 ground.transform.localScale *= Consts.GroundScale;
             }
         }
+
+        
 
         public override void AcademyReset()
         {
