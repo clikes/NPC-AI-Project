@@ -10,7 +10,7 @@ namespace NpcAI
         // Use this for initialization
         NpcaiAcademy academy;
         //Animator animator;
-        private ObjectPercepton rayPer;//for enemy detect
+        private ObjectPerception rayPer;//for enemy detect
         TrainingGround trainingGround;
         CharacterController cc;
         Rigidbody agentRb;
@@ -37,7 +37,7 @@ namespace NpcAI
             cc = GetComponent<CharacterController>();
             cc.enabled = false;
             academy = GameObject.Find("Academy").GetComponent<NpcaiAcademy>();
-            rayPer = GetComponent<ObjectPercepton>();
+            rayPer = GetComponent<ObjectPerception>();
             rayPer.enemy = this;
             lastEpisode = Timer.time;
             trainingGround = GetComponentInParent<TrainingGround>();
@@ -86,9 +86,6 @@ namespace NpcAI
             AddVectorObs(buffer);
             AddVectorObs(transform.forward.x);
             AddVectorObs(transform.forward.z);
-            //AddVectorObs(target.transform.position.x - transform.position.x);
-            //AddVectorObs(target.transform.position.z - transform.position.z);
-
         }
 
         /// <summary>
@@ -142,7 +139,7 @@ namespace NpcAI
             {
                 //AgentReset();
                 AddReward(-0.05f);
-                if (struckTime == float.MinValue)
+                if (Mathf.Abs( struckTime - float.MinValue) <= 0.00001f)
                 {
                     struckTime = Timer.time;
                 }

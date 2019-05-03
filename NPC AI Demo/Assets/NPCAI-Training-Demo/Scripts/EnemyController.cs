@@ -65,7 +65,7 @@ namespace NpcAI
             //animator.SetInteger("Death", 2);
             isAlive = false;
             deathTime = Time.time;
-            GetComponent<CharacterController>().enabled = false;
+            //GetComponent<CharacterController>().enabled = false;
             GetComponent<Renderer>().material = dead;
             GetComponent<Rigidbody>().velocity = Vector3.zero;
         }

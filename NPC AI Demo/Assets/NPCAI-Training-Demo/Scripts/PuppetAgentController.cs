@@ -15,14 +15,14 @@ namespace NpcAI
         public Material dead;
         public bool moveable;
         float[] randommove;
-        private ObjectPercepton rayPer;
+        private ObjectPerception rayPer;
         Rigidbody rb;
         // Use this for initialization
         void Start()
         {
             ground = GetComponentInParent<TrainingGround>();
             movementTargetPosition = transform.position; //initializing our movement target as our current position
-            rayPer = GetComponent<ObjectPercepton>();
+            rayPer = GetComponent<ObjectPerception>();
             //isAlive = true;
             // deathTime = 0;
             // trainingGround = GetComponentInParent<TrainingGround>();

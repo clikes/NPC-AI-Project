@@ -5,10 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/ZombieGame/Scene/Zombie game Demo.unity
+    path: Assets/NPCAI-Training-Demo/Scene/NPCAI Training Scene.unity
     guid: 1447ead0d302d15408d00e161e5d873d
   m_configObjects: {}

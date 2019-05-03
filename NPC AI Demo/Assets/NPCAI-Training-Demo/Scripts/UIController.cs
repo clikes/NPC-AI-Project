@@ -13,6 +13,8 @@ namespace NpcAI
         public Text rewardtext;
         public Text enemyrewardtext;
         public Text TimeText;
+        public Text FinalReward;
+        bool finalFlag = false;
         // Use this for initialization
         void Start()
         {
@@ -38,9 +40,20 @@ namespace NpcAI
             if (oneEnemyAgent != null)
             {
                 enemyrewardtext.text = oneEnemyAgent.GetCumulativeReward().ToString();
-                TimeText.text = oneEnemyAgent.lastEpisode.ToString();
+
+            }
+            if (30 - Timer.time >= 0)
+            {
+                TimeText.text = "Remain Time: " + (30 - Timer.time) + "s";
+
+            } 
+            else if (!finalFlag)
+            {
+                finalFlag = true;
+                FinalReward.text = "Final Reward: " + oneAgent.GetCumulativeReward().ToString() + " "+ oneEnemyAgent.GetCumulativeReward().ToString();
             }
             
+
 
         }
     }

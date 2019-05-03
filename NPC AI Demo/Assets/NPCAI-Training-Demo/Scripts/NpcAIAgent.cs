@@ -8,7 +8,7 @@ namespace NpcAI
     {
         NpcaiAcademy academy;
         //Animator animator;
-        private ObjectPercepton rayPer;//for enemy detect
+        private ObjectPerception rayPer;//for enemy detect
         TrainingGround trainingGround;
         TreasureController target;
         CharacterController cc;
@@ -24,7 +24,7 @@ namespace NpcAI
         {
             cc = GetComponent<CharacterController>();
             academy = GameObject.Find("Academy").GetComponent<NpcaiAcademy>();
-            rayPer = GetComponent<ObjectPercepton>();
+            rayPer = GetComponent<ObjectPerception>();
             rayPer.player = this;
             lastEpisode = currentTime.Second;
             trainingGround = GetComponentInParent<TrainingGround>();
@@ -163,7 +163,7 @@ namespace NpcAI
                 Done();
             }
 
-            GetReward();
+            //GetReward();
 
             Vector3 dirToGo = Vector3.zero;
             Vector3 rotateDir = Vector3.zero;
@@ -171,34 +171,23 @@ namespace NpcAI
             Vector3 LookToward = Vector3.zero;
             if (brain.brainParameters.vectorActionSpaceType == SpaceType.continuous)
             {
-                
-                MoveToward.x += Mathf.Clamp(vectorAction[0], -1, 1);//钳制value 大于1 则返回1 小于-1则返回-1
+                //clamp value bigger than 1 return 1 less than -1 return -1
+                MoveToward.x += Mathf.Clamp(vectorAction[0], -1, 1);
                 MoveToward.z += Mathf.Clamp(vectorAction[1], -1, 1);
                 LookToward.x += Mathf.Clamp(vectorAction[2], -1, 1);
                 LookToward.z += Mathf.Clamp(vectorAction[3], -1, 1);
                 transform.LookAt(transform.position + LookToward.normalized);
-                //cc.SimpleMove(Consts.agentMoveSpeed * MoveToward.normalized);
                 agentRb.AddForce(MoveToward.normalized * Consts.agentMoveSpeed, ForceMode.VelocityChange);
                 if (agentRb.velocity.magnitude > Consts.agentMoveSpeed)
                 {
                     agentRb.velocity = agentRb.velocity.normalized * Consts.agentMoveSpeed;
                 }
-                //dirToGo = transform.forward * Mathf.Clamp(vectorAction[0], -1f, 1f);
-                //rotateDir = transform.up * Mathf.Clamp(vectorAction[1], -1f, 1f);
-
-                //agentRb.AddForce(dirToGo.normalized * Consts.agentMoveSpeed, ForceMode.VelocityChange);
-                //if (agentRb.velocity.magnitude > Consts.agentMoveSpeed)
-                //{
-                //    agentRb.velocity = agentRb.velocity.normalized * Consts.agentMoveSpeed;
-                //}
-                //transform.Rotate(rotateDir, Time.fixedDeltaTime * Consts.TurningSpeed);
             }
             else
             {
                 int forwardAxis = (int)vectorAction[0];
                 int rightAxis = (int)vectorAction[1];
                 int rotateAxis = (int)vectorAction[2];
-                int shootAxis = (int)vectorAction[3];
 
                 switch (forwardAxis)
                 {

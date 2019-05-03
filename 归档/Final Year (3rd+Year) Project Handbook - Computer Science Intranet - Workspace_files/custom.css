@@ -1,0 +1,67 @@
+
+               #header .aui-header {  
+    background-color: #fff;  
+    border-bottom: 1px solid #1A296B;  
+ }  
+  
+ .aui-header .aui-dropdown2-trigger, #header .aui-header .aui-nav-link, #header .aui-header .aui-nav-imagelink, #header .aui-header a {  
+    color: #1A296B;  
+}  
+  
+  
+.aui-header .aui-dropdown2-trigger:hover, .aui-header .aui-dropdown2-trigger.active, #header .aui-header .aui-nav-link.active, #header .aui-header .aui-nav-imagelink.active, #header .aui-header .aui-nav-imagelink:focus, #header .aui-header .aui-nav-imagelink:hover, #header .aui-header a:focus, #header .aui-header a:hover, #header .aui-header a:active {  
+    background-color: #EEE;  
+    color: #1A296B;  
+}  
+  
+  
+.aui-dropdown2.aui-style-default a:focus, .aui-dropdown2.aui-style-default a:hover, .aui-dropdown2.aui-style-default a.active {  
+    background-color: #EEE;  
+    color: #1A296B;  
+}  
+  
+.aui-header .aui-quicksearch input[type='text'], .aui-header .aui-quicksearch input[type='text'], .aui-header .aui-quicksearch input[type='text'][type='text']:focus {  
+    color: #1A296B;  
+    }  
+  
+  
+    .aui-header .aui-header-logo img {  
+    max-height: 90px;  
+   
+}  
+  
+#header .aui-header {  
+      
+    height: 65px;  
+}  
+  
+  
+ul.aui-nav.__skate {  
+    margin-top: 12px;  
+}  
+  
+  
+.aui-header .aui-dropdown2-trigger:not(.aui-dropdown2-trigger-arrowless):after {  
+     
+    border-top-color: #1A296B;  
+  
+    }  
+  
+    .aui-header .aui-quicksearch:after {  
+    color: #1A296B;  
+  
+    }  
+  
+#logo:hover, #logo:active, #logo a:hover, #logo a:active {  
+    background-color: #fff !important;  
+}  
+  
+#space-menu-link, #people-directory-link {  
+    font-weight: bold;  
+}  
+  
+#logo a {  
+    padding-left:0px;  
+}  
+
+

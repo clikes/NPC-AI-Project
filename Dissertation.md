@@ -176,6 +176,7 @@ Here's a list of every object inside of the game scene:
 The training should implement the curriculum training method.
 
 Two agents will train separately at the beginning of the training process, when each of them have some "knowledge" of the complete scene, we then put them together and train.
+This training design is the final design, the design have changing during the each times I train the model since the project is start, each value of this project is been adjust many time until the result is acceptable.
 The detailed training stage explaination would be:
 
 1. First training stage
@@ -338,7 +339,7 @@ Finally, we go back to the academy and uncheck the control toggle, then click th
 
 To watch other example and to training a model first time is really important, it is give you a basic idea of what reinforcement learning can do and how to build a nice scene.
 
-#### First Try Of Building a ML-Agents Training Scene
+#### First Try Of Building a ML-Agents Training Scene (*This scene train by ML-Agents bata v0.5)
 
 The first scene I build for ML-Agents training was the simple test game, follow the scene building [guide](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Create-New.md) offer by ML-Agents project.
 
@@ -350,8 +351,11 @@ Plane, Roller(Sphere) and Target(Cube).
 
 ![image-20190428193330327](/Users/like/Library/Application%20Support/typora-user-images/image-20190428193330327.png)**Figure: ** Screen shot of the test game I built
 
-I should link mlagents’ script into the game object Brain, Academy and Agent.
-![image-20190428193505268](/Users/like/Library/Application%20Support/typora-user-images/image-20190428193505268.png)**Figure:** Test Scene hirerarchy
+##### Academy, Brain and Agent
+
+ML-Agents using this three script for the training, which mention before that academy contain a external communicator with python API. Therefore, we need to setting up the training environment for the training inside of Unity. 
+
+To do this, we should create a ***BasicAcademy*** class inherit the ***Academy*** class from ML-Agents, and create ***BasicBrain*** class inherit the ***Brain*** class from ML-Agents (*this process is different from the v0.7 of ML-Agents), then create and edit  the **BasicAgent*** class inherit the ***Agent*** class from ML-Agents. About the coding of ***BasicAgent*** class will be explain in continous part.
 
 ##### Training Settings: 
 
@@ -471,16 +475,224 @@ At the beginning of this project the police agent is build as the only agent whi
 
 - EnemyController.cs
 
-  - Can be catch by police agent as the thief agent, by adjust the value ***moveable*** inside of the class can change the thief state to randomly moving or freeze.
-  - This class hardcode the thief's behaviour
+  - Let thief game object can be catch by police agent as the thief agent, by adjust the value ***moveable*** inside of the class can change the thief state to randomly moving or freeze.
+  - This class hardcode the thief's behaviour,  mainly use for the training of police agent.
+
+- PuppetAgentController.cs
+
+  - Similar as the ***EnemyController.cs*** but this one is for training of the thief agent.
+
+- ObjectPerception.cs: The "vision" of Agent
+
+  - This script is make for agent to perceive the objects around itself, the agent will cast fixed number of sphere (following a straight line), the number is the length of a list of angles, the sphere will fly foward due to the input angles and a fixed length of distance, then the ***Physics.SphereCast*** will return the first game object it hit, we can using the tag of the object to regonize which object it hit.
+    ![image-20190430155758238](/Users/like/Library/Application Support/typora-user-images/image-20190430155758238.png)
+    **Figure:** Sketch of sphere cast line, the "vision" of agent
+    This class is actually the agent's "vision", the data it got will become a big part of the brain's observation input, it simulate human's vision, and return with some numerical data for the reinforcement learning brain.
+
+  - The reason why we need this script is that there may be many objects with same type in the scene, due to the constraint of ML-Agents, the number of observatoin data should be a static fixed number of value,  it should detemind before the training start, and cannot change during the training, moreover, we cannot load a half-training model with different number of observation data. 
+
+    ![image-20190430165840948](/Users/like/Library/Application Support/typora-user-images/image-20190430165840948.png)
+    **Figure:** Example of Observation data setting 
+
+    With this class we can adjust the scene with as many object as we want, we do not need to reference each of this object to the observation to the brain. In this project, the ***ObjectPerception*** provide 7 lists of detection data to the observation, it's mean that the agent can "see" at most 7 object at the same time (each frame). Hence, we can use the ***ObjectPerception*** to solve the observation fixed number problem.
+
+  - This script is edit base on ***RayPerception.cs***. The main idea is to using one hot encoding to collect the data, for example of thief agent's code of observation collect:
+  
+    ```c#
+     public override void CollectObservations()
+            {
+                float rayDistance = Consts.OutsideGroundLength * 0.8f;
+                float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f };
+                string[] detectableObjects = { "obstacle","wall", "agent", "target"};
+                List<float> buffer = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f);
+                AddVectorObs(buffer);
+                AddVectorObs(transform.forward.x);
+                AddVectorObs(transform.forward.z);
+            }
+    ```
+  
+    We can see that the thief agent can detect five objects: obstacle, wall, agent and target.
+    In code, it repersent as a list of string which contain the detectable objects' tag, the tag is a Unity feature which can let us easily reference to the game object in scene. 
+    The data of each angle would be something like this:
+  
+    | Obstacle | Wall | Agent | Target | Nothing | Delta X | Delta Y |
+    | -------- | ---- | ----- | ------ | ------- | ------- | ------- |
+    | 0        | 1    | 0     | 0      | 0       | 2.4     | 3.1     |
+  
+    This data means the relative position of the wall relative to the agent is on the vector of (2.4, 3.1), the data structure is been change by me, since the ***RayPerception*** would collect data like this:
+  
+    | Obstacle | Wall | Agent | Target | Nothing | Relative Distance         |
+    | -------- | ---- | ----- | ------ | ------- | ------------------------- |
+    | 0        | 1    | 0     | 0      | 0       | Hit distance/ray distance |
+  
+    It using a relative distance to represent the position of the detected object, which I think adding a value to it is easier for reinforcement learning brain to find the relation between data, although one value is save the obsrevation space for the input, I rather using two value for it, since it can reducing the training time.
 
 ##### ML-Agents' Scripts
 
+###### Academy
+
+The academy of this project control the scale of each training ground due to the value in ***Const*** at the beginning of training. Other function of academy is set up by ML-Agents already.
+
+###### Brain
+
+ML-Agents is a iterative beta project, the project is upgrade from v0.5 to v0.7 during this project processing (at the time of writing this paper, it upgrade to v0.8, but since the model is already trained, I did not choose to update to new version), the brain part had a significant change than before, it become a .asset file instead of a script can be inherit, it is more convenient to use than before, just right click and choose the brain from the menu we have the .asset file, then we can adjust the values easily.
+
+![image-20190501191704953](/Users/like/Library/Application Support/typora-user-images/image-20190501191704953.png)
+**Figure:** Sample brain data setting
+Two brains have similar value, since the police using the vector of tresure instead of using the object perception to observe the tresure, it is observation space size is 46 less than brain of thief. And it will output 4 continuous values which represant the movement and the  rotation of the agent.
+
+###### Agent
+
+- Police Agent
+
+  - Collect Observations
+
+    ```c#
+            public override void CollectObservations()
+            {
+                float rayDistance = Consts.OutsideGroundLength * 0.8f;
+                float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f};
+                string[] detectableObjects = { "Enemy" , "wall" , "obstacle"};
+                List<float> buffer = rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f);
+                AddVectorObs(buffer);
+                AddVectorObs(transform.forward.x);
+                AddVectorObs(transform.forward.z);
+                AddVectorObs(target.transform.position.x - transform.position.x);
+                AddVectorObs(target.transform.position.z - transform.position.z);
+            }
+    ```
+
+    - 7 angles of object perception data with 3 kind of deteable objects
+    - Facing direction of agent
+    - Treasure relative position, police should have the exact position of the treasure all the time
+
+  - Reward Setting
+
+    - Catch a thief get +5 reward
+    - Hit wall get -1 reward
+    - Hit or stuck with obstacle get -0.05 reward per frame
+    - Get close from enemy get +0.1 reward
+    - Get away from enemy get -0.1 reward
+    - Look at enemy get +0.001 (This reward will disable during the curriculum training)
+
+  - Action Setting
+
+    ```c#
+                Vector3 dirToGo = Vector3.zero;
+                Vector3 rotateDir = Vector3.zero;
+                Vector3 MoveToward = Vector3.zero;
+                Vector3 LookToward = Vector3.zero;
+                if (brain.brainParameters.vectorActionSpaceType == SpaceType.continuous)
+                {
+                    //clamp value bigger than 1 return 1 less than -1 return -1
+                    MoveToward.x += Mathf.Clamp(vectorAction[0], -1, 1);
+                    MoveToward.z += Mathf.Clamp(vectorAction[1], -1, 1);
+                    LookToward.x += Mathf.Clamp(vectorAction[2], -1, 1);
+                    LookToward.z += Mathf.Clamp(vectorAction[3], -1, 1);
+                    transform.LookAt(transform.position + LookToward.normalized);
+                    agentRb.AddForce(MoveToward.normalized * Consts.agentMoveSpeed, ForceMode.VelocityChange);
+                    if (agentRb.velocity.magnitude > Consts.agentMoveSpeed)
+                    {
+                        agentRb.velocity = agentRb.velocity.normalized * Consts.agentMoveSpeed;
+                    }
+                }
+    ```
+
+    Use 4 continuous values for the agent controling, two values for move direction, other two values for rotation direcition. 
+
+- Thief Agent
+
+  - Collect Observations
+    - Similar to police agent, but it percept 4 kind of detectable objects.
+  - Reward Setting
+    - Steal treasure get +5 reward
+    - Hit wall get -1 reward
+    - Hit or stuck with obstacle get -0.05 reward per frame
+    - Be catch by police get -2.5 reward
+    - Get close to target get +0.05 reward
+  - Action Setting
+    - Identical to the police agent
+
+### Training
+
+ML-Agents has a nice curriculum learning feature, but by design of this training process, the agent should be train one by one and when they each have a better behaviour we train them together. ML-Agents did not support this process yet (until ML-Agents v0.8), the agent should be train start with either one agent or two agent, but cannot change the training agent or mix up two agent training during training. Hence, this project implement curriculum learning manually by manually start each training.
+
+The training of agent is not like the supervize training, we should observe most of training process including data in TensorBoard, agent behaviour in game and current reward in game, and we adjust the hyperparameter or even re-design a part of training, the design of this project is already the final version of training after many modified. 
+
+####Agent Training
+
+##### Setting up scene
+
+1. Setting up training scene by design
+2. Modify ground scale in ***Const*** to 0.7f at the first stage of training (The training was very slow in the full size ground) 
+3. ![image-20190502213415390](/Users/like/Library/Application Support/typora-user-images/image-20190502213415390.png)
+
+**Figure:** Each stages training scene of police agent
+
+4.![image-20190502213805357](/Users/like/Library/Application Support/typora-user-images/image-20190502213805357.png)**Figure:** Each stages training scene of thief agent
+
+#####Training Configurations
+
+1. ```yaml
+  NPCAILearningBrain:
+      gamma: 0.995
+      beta: 1.0e-3
+      batch_size: 512
+      buffer_size: 10240
+      num_epoch: 3
+      max_steps: 5.0e5
+      hidden_units: 256
+      num_layers: 2
+
+  EnemyLearningBrain:
+      gamma: 0.995
+      beta: 9.0e-4
+      batch_size: 512
+      buffer_size: 10240
+      num_epoch: 3
+      max_steps: 5.0e5
+      hidden_units: 256
+      num_layers: 2
+  ```
+  
+  **The beta value is controlling  randomness of the policy, we should adjust the beta value during training by oberving the entropy curve of TensorBoard.**
+  
+  Two configurations is similar but with different beta value, because during training the entropy of them have different curve, it is should adjust separately. 
+
+#####Training Observing
+
+######Police Agent First Three stages
+
+![image-20190502222534343](/Users/like/Library/Application Support/typora-user-images/image-20190502222534343.png)
+**Figure:** Cumulative Reward of Police Agent 
+
+*A data loss happened between 150k to 200k step, pause a train and resume again may cause some data loss.
+
+We can see that the curve would have a change after the stage change (new complexity of scene), but the reward is still incresing. This line is fluctuation due to a lot of hyperparameter change during the training, most of the change was the change of the reward.
+
+###### Thief Agent First Three Stages
+
+![image-20190503001213524](/Users/like/Library/Application Support/typora-user-images/image-20190503001213524.png)**Figure:** Cumulative Reward of Thife Agent
+
+*A data loss happened between 170k to 210k step, pause a train and resume again may cause some data loss.
+
+######Final Training With Two Agent Together
+
+![image-20190503161109664](/Users/like/Library/Application Support/typora-user-images/image-20190503161109664.png)**Figure:** Cumulative Reward of Two Agents (Blue line is thief agent, red line is police agent)
+
+To merge two training agent together, we should copy two agent's training file from the folder ml-agents/models to a new folder with the new run id that we going to training two agents together, in this project particularly, is "npcai-dual", the ML-Agents will load the file from the new folder and continous training with two half-trained model.
+
+Two line start at different x axis because the previous training is ending in different step.
+
+The thief agent cumulative reward curve is already converge at about 300k steps, but after about 200k steps training, police agent's cumulative reward curve is very steep, the reason why this happen may be the random position of treasure and thief agents, it may let police agent catch too many thief in a episode or too little in a episode. But the cumulative reward do not have a obvioursly incresing or decresing, and the agent behaviour look well inside of the scene. I choose to end the training now. 
+
+In this point, two model of agent is already generated.
+
+---
+
+## Evaluation
 
 
-
-
-For each agents, the scnen has four detectable object as the input of the brain. The number of detectable objects is be design to have four for each, since the ML-Agents' examples have on avarage 5 to 6 detectable for the example that using the ***RayPerception*** class, but in my project I using the ***ObjectPerception*** class which I wrote base on ***RayPerception*** class, the information gain is more than the ***RayPerception*** class, so I decide to use 4 detectable as input to have similar performance as the examples.
 
 
 
