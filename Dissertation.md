@@ -345,7 +345,7 @@ The first scene I build for ML-Agents training was the simple test game, follow 
 
 The test game scene is a simple game: Agent adding force to white sphere, trying to reach the goal cube and try not to fall from the black plane. This game is build all by myself with mlagents’ document. 
 
-##### The scene is simple, only contain a few object: 
+##### The scene is simple, only contain a few object
 
 Plane, Roller(Sphere) and Target(Cube). 
 
@@ -357,11 +357,11 @@ ML-Agents using this three script for the training, which mention before that ac
 
 To do this, we should create a ***BasicAcademy*** class inherit the ***Academy*** class from ML-Agents, and create ***BasicBrain*** class inherit the ***Brain*** class from ML-Agents (*this process is different from the v0.7 of ML-Agents), then create and edit  the **BasicAgent*** class inherit the ***Agent*** class from ML-Agents. About the coding of ***BasicAgent*** class will be explain in continous part.
 
-##### Training Settings: 
+##### Training Settings
 
 To train a model, brain need input data for decision making, and inside agent script we have a recall function for apply new action to out agent. 
 
-##### Observation: 
+##### Observation
 
 Use function AddVector inside override function CollectObservations to add input to brain. 
 
@@ -374,7 +374,7 @@ Use function AddVector inside override function CollectObservations to add input
 
 Using function ***AddVectorObs*** to add a observation value or a list of observation values to the agent brain, the brain would take these observation as input, the ***CollectObservations*** function will be call before each action.
 
-##### Reward Setting: 
+##### Reward Setting
 
 In reinforcement learning, we should tell agent which result is good and which result is bad, then it will adjust itself for optimal decision. 
 
@@ -692,7 +692,29 @@ In this point, two model of agent is already generated.
 
 ## Evaluation
 
+This project is building a new training scene and two agent for this scene, there is not other agent to compare with, but by observing the cumulative reward gain of each agent, we can tell that each agent's behaviours is been improve over time.
 
+Here's a table of the trained model reward gain.
+
+| AI Run | POLICE REWARD | THIFE REWARD |
+| ------ | ------------- | ------------ |
+| 1      | 200           | 52           |
+| 2      | 217           | 67           |
+| 3      | 190           | 64           |
+| 4      | 144           | 72           |
+| 5      | 201           | 32           |
+| 6      | 161           | 56           |
+| 7      | 157           | 44           |
+| 8      | 156           | 92           |
+| 9      | 194           | 68           |
+| 10     | 169           | 75           |
+| AVG    | 178.9         | 62.2         |
+
+
+
+---
+
+## Summary and Reflections
 
 
 

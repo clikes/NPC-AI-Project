@@ -22,6 +22,6 @@ namespace NpcAI
         /// <summary>
         /// in second
         /// </summary>
-        public readonly static float episodeTime = 30f;
+        public readonly static float episodeTime = 31f;
     }
 }
