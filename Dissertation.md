@@ -2,13 +2,25 @@
 
 ---
 
+##Introduction
+
+The purpose of this project is to investigate AI in game playing, particularly how to create intelligent NPC that adjusts to the conduct of human players, adapt to many game instead single one. Understudies taking on this task are relied upon to investigate reinforcement learning AI configuration and training.
+
+This project is using The Unity Machine Learning Agents Toolkit (ML-Agents) to train an agent to play against human in Unity built game, the model should be able to use in the game similar to the training scene. The training is using the deep reinforcement learning algorithm, PPO, as the main training algorithm. This project focuses on creating an agent that can play a game against and **defeat** human and can be used in a similar game.
+
+This paper will explain in detail how to use ML-Agent to training an agent and how to **build a training scene** by Unity and how to **use ML-Agents for agent training**.  It will discuss the design of the training scene and how to build a trainable scene, the design of the training process and curriculum learning. Since the ML-Agents is still in the beta stage, this paper also can become an introductory guide for the programmer that wanted to use Unity + ML-Agent as the environment to do the research of the reinforcement learning.
+
+There will be a game test that is human play against the agent to do the evaluation of AI's game ability.
+
+---
+
 ## Motivation
 
 Over 90% of PC games so far have single-player mode and a large portion of these recreations require Non-Player Characters (NPC) against which the player is contending. Constrained by the game's AI as opposed to by a gamer, NPCs exhibit astute practices amid the procedure of the diversion. 
 
-The purpose for this project is to investigate AI in game playing, particularly how to create intelligent NPC that adjusts to the conduct of human players, and\or playing a lot of game as opposed to a particular diversion. Understudies taking on this task are relied upon to investigate computational AI methodologies and calculations.
+Most of the game right now is using human scripting to control the NPC, the difficulty level is hard to control, the common solution is to adjust the value of the NPC such as NPC's attack value, health value, etc. This requires a solid value design, including many mathematical techniques. This project will discover a new way of NPC design, which is using reinforcement learning to train a model of NPC, the agent will learn how to control the NPC inside of the game and learn how to play against other players including other agent and human, we can use the different training stage of the trained model for the difficulty control or we can just adjust the "reaction speed" of the agent by reducing the decision rate to 1 per frame to 2 frames 1 decision. Moreover, this project is meant to build an NPC against human that as "strong" as possible, since an NPC that cannot defeat any human is useless for this problem.
 
-This project should make a AI model for the controlling of NPC in game, and should be use in many game with similar structures of game logic, this project model will aim at build model for a simple chasing and collecting game. 
+Another task of this project is to make a contribution to the ML-Agents community, the ML-Agents is an open source Unity plugin and it is still under beta stage, since TensorFlow and Pytorch is currently the most common machine learning tools, most training scene is built by Python which compare to Unity, a real game editor is not the best way for the game building. Moreover, Unity is a mainstream game editor right now, the reinforcement learning models may be widely used in many games.
 
 ---
 
@@ -692,9 +704,11 @@ In this point, two model of agent is already generated.
 
 ## Evaluation
 
-This project is building a new training scene and two agent for this scene, there is not other agent to compare with, but by observing the cumulative reward gain of each agent, we can tell that each agent's behaviours is been improve over time.
+### Build Version Game Test
 
-Here's a table of the trained model reward gain.
+This test is using two agent model to build a demo game which is a runnable on macOS and Windows to test the AI performance in build game.
+
+Since the game play in different opearting system is similar, the build test is only run in macOS.
 
 | AI Run | POLICE REWARD | THIFE REWARD |
 | ------ | ------------- | ------------ |
@@ -710,13 +724,67 @@ Here's a table of the trained model reward gain.
 | 10     | 169           | 75           |
 | AVG    | 178.9         | 62.2         |
 
+### Human Test
 
+The human test is run on the build game that human would control the police character play against the thief agent, and there will be a comparison between police agent and human.
+
+The test environment is in the participants' own machine either MacOS or Windows, I build runnable game for both of this two OS depend on the participants' machine's OS. Some of the participants' machine is too old for the game playing, I offer a macOS machine for them to test.
+
+Each of the participants would play a few minutes for familar to the controlling of the police character, then they will play 3 games (each game will last 30 seconds, since each training episode last 30 seconds), the training environment is fixed 60 frame per second (FPS), it's the main stream gaming FPS, but some of the participants' machine cannot stablely running the test game in 60 FPS, I offer them a macOS machine to test.
+
+The average reward gain of human's play of police character is -24.224.
+
+### Conclusion
+
+The AI is much powerful than human player, since the human is barely reach positive reward gain, but AI can get more than 150 points on average.
 
 ---
 
 ## Summary and Reflections
 
+### Training Scene
 
+The training scene is a brand new training scene compare to other exist training scene, which I design and build the scene from scratch, it has two role of player play against each other, both of the agents get improve during training. The  agent need to have behaviour such as:
+
+- Detect: Rotate itself to the right direction for percepte the object inside of the scene.
+- Find: Moving itself inside of scene to find the target.
+- Chase: When agent saw the target, it will chasing after the target.
+- Dodge: Agent will detect the obstacles inside of scene and dodge, and agent will not be stuck by the obstacles. For thief agent particularly, it dodge the police agent that chasing after it.
+
+The scene would be a helpful training scene for the researching of the reinforcement learning.
+
+### Agent Trained Model
+
+The two models that this project made can be use in the same game that has the same game logic and similar scene, since reinforcement learning always produce model that finding the optimal solution for the training scene, the performance might be decreasing when the scene changed a lot.
+
+There is hard to find a model that can compare to these models, since no other using this scene to train agent yet. But we can have a partial comparison to ML-Agents' example Soccer Two scene, the scene has two role of player and player would player against each other as well, the agent in that scene usaully stuck in some where and the performance is unstable compare to these scene's agent, it is clearly that the agent was not being well trained. A well trained agent should act confidently and trying not to stuck in somewhere doing random things, since in the later training the agent's actions should more depend on neural network instead of random value.
+
+### Project Management
+
+The first part of this project is environment finding and set up, the first two week of the proessing, is to detemind that this project will use Unity + ML-Agents as the development environment, setting up the development environment and learning how to use the tools to do the training.
+
+Then I spilt the work in to two parts, the first one is training scene building, the other is agent training, the two part of work should be low coupling in other to making the project more adaptable, hence, the scene can be use without 
+ML-Agents script with a slightly change of the scene. 
+
+The building of scene was start before the training, since the training is base on the scene, but the scene still need to edit or update while training, mostly the project need to edit scene, edit script, edit hyperparameter, observing the data,  I spending most of the time on these work, they are mostly mixed together.
+
+And the final work before the writing of this paper is building a testable game for the participants.
+
+### Contributions and Reflections
+
+###Contributions
+
+The contribution of this project is to create two models that can play against human, and it is more powerful than human, since in the evaluation, the average of reward of AI is 200 points more than human's, and only seveal human can get positive reward, we can use the different training stage of the model to become different level of difficultly of game. 
+
+Moreover, this project also produce a by-product which is the training scene, since the ML-Agents is still in beta stage, the training scene would be good for the community.
+
+By the using of ML-Agents, I discover some bug inside of the project, and already discussing with other people in the issues of the ML-Agents github project page.
+
+### Reflections
+
+The training scene may have more complexity for the agent training, and should consider about the test of game earlier since the runnable test game is rough, not very user friendly for the participants.
+
+After doing this much training and scene building, I have more experience on the implement of using reinforcement learning tools to training agent, there are many things that in the training should consider about, such as the observe of training and the curriculum training, I should do more research on the curriculum training, it will save many time of the training.
 
 ---
 
